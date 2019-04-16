@@ -3,8 +3,12 @@
 #Add line "Subsystem       powershell   /usr/bin/pwsh --sshs -NoLogo -NoProfile"
 #Remove commenting on "#PasswordAuthentication yes"
 
+$Linux = 'LinuxMachineName'
+$LinuxAdmin = 'Adminusername'
+$Windows = 'WindowsMachineName'
+
 #Connect to Linux (Delay in openssh response)
-Enter-PSSession -hostname uscku1metu03c0l -UserName atomadmin
+Enter-PSSession -hostname $Linux -UserName $LinuxAdmin
 #
 $PSversiontable
 #
@@ -27,22 +31,22 @@ $(Get-Command -CommandType Cmdlet | Measure-Object).count
 Exit-PSSession
 
 #Connect with WinRM
-Enter-PSSession uscku1metu03c3
+Enter-PSSession $Windows
 $PSversiontable
 #Close Session
 Exit-PSSession
 
 #Connect with OpenSSH
-Enter-PSSession -hostname uscku1metu03c3
+Enter-PSSession -hostname $Windows
 $PSversiontable
 #Close Session
 Exit-PSSession
 
 #MultiSession
 $sessions = @()
-$sessions += New-PSSession -hostname uscku1metu03c0l -UserName atomadmin
-$sessions += New-PSSession uscku1metu03c3
-$sessions += New-PSSession -hostname uscku1metu03c3
+$sessions += New-PSSession -hostname $Linux -UserName atomadmin
+$sessions += New-PSSession $Windows
+$sessions += New-PSSession -hostname $Windows
 
 #Lets see what our sessions look like
 $sessions
