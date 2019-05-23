@@ -7,6 +7,7 @@ $Linux = 'LinuxMachineName'
 $LinuxAdmin = 'Adminusername'
 $Windows = 'WindowsMachineName'
 
+#test
 #Connect to Linux (Delay in openssh response)
 Enter-PSSession -hostname $Linux -UserName $LinuxAdmin
 #

@@ -1,0 +1,47 @@
+What I am going to talk about
+-PowerShell Core: What is it and how do I use it.
+-When I heard about ATOM I really wanted to do a talk but being from a Microsoft Background what do I know thats Open Source?
+-I quickly realized PowerShell Core is open source and it would be a great excuse to learn something and present my findings
+-Today we are going to focus on the basics: getting PowerShell Core setup, because unlike PowerShell its not installed by default
+	and Using it like you would PowerShell to remote into other machines and pull information
+
+Bio
+-PS Advocate, I try to teach and train colleagues
+	-Ive learned that I can automate through scripting and I can teach people to script I have automated my automation
+	-1000's of hours saved not by my script but by scripts ive helped other develop
+-Lead RTPSUG
+	-Some of the Best PowerShell experts in the world presenting
+	-Showing off new or unique tools
+	-Teaching you the basics and the more advanced topics
+	-Meet twice a month
+-I've been using PowerShell for about 8 years since v3
+
+PowerShell
+-CLI with the purpose of task automation and configuration management for Windows based Operating Systems
+-Built into Windows since Server 2008
+	-Available for Windows XP SP2 and Server 2003 SP2 (Feb 2008 over a decade)
+-CMDlets are unique and give PowerShell its POWER!
+	-verb-noun easy to understand
+-Uses PowerShell ISE for scripting environment
+-.Net Framework
+-The latest version is 5.x
+-Like the ISE Microsoft has said that PowerShell will only receive security updates going forward.
+
+PowerShell Core
+-PowerShell v 6.0
+-based on .NetCore instead of .Net Framework
+-Open Source and runs on Linux, Mac OS, and Windows. (Windows IoT, Arm support as well)
+-Installs sxs with PowerShell 5.0
+-pwsh vs powershell.exe
+-Microsoft works actively on PowerShell Core. PowerShell, is in a state of extended support. Microsoft has no plans to add features to PowerShell, but it will release critical bug fixes and security updates.
+-PowerShell Core has no ISE USE VS CODE!
+-Missing things like:
+	-web forms, get-credential is all cli based
+	-no out-gridview
+	-limited cmdlets (and we will see how limited in my presentation)
+-Mention Windows Compatibility Module
+-Supports Remoting over SSH as well as WinRM
+
+Demos
+
+PowerShell 7
