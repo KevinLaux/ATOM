@@ -3,9 +3,9 @@
 #Add line "Subsystem       powershell   /usr/bin/pwsh --sshs -NoLogo -NoProfile"
 #Remove commenting on "#PasswordAuthentication yes"
 
-$Linux = 'LinuxMachineName'
-$LinuxAdmin = 'Adminusername'
-$Windows = 'WindowsMachineName'
+$Linux = 'uscku1metu03c0l'
+$LinuxAdmin = 'atomadmin'
+$Windows = 'uscku1metu03c3'
 
 #test
 #Connect to Linux (Delay in openssh response)
@@ -18,6 +18,7 @@ if($PSversiontable.OS | Select-String Linux){Write-Host "I am Linux" -Foreground
 if($PSversiontable.OS | Select-String Windows){Write-Host "I am Windows"}
 # Do not get hung up on CASE SENSITIVITY 'Grep' <> 'grep'
 if($PSversiontable.OS | grep Linux){Write-Host "I am Linux"}
+Get-alias grep
 # Easier Method
 $IsLinux
 #
@@ -25,13 +26,13 @@ $IsWindows
 #
 $IsMacOS
 #
-if($IsLinux){Write-Host "I am Linux"}
+if($IsLinux){Write-Host "I am Linux" -ForegroundColor Red}
 #How many Cmdlets do we have?
 $(Get-Command -CommandType Cmdlet | Measure-Object).count
 #Close Session
 Exit-PSSession
 
-#Connect with WinRM
+#Connect with WSMan
 Enter-PSSession $Windows
 $PSversiontable
 #Close Session
