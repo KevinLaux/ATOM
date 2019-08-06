@@ -1,7 +1,20 @@
+#Windows ModulePSReleaseTools module (https://github.com/jdhitsolutions/PSReleaseTools)
 #On Linux install package yum/apt-get
+#On MAC Brew
+#Oneliners:
+#Windows- iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI -Preview"
+#Linux- wget https://aka.ms/install-powershell.sh; sudo bash install-powershell.sh -preview; rm install-powershell.sh
+#Download MSI/RPM/PKG
 #Update /etc/ssh/sshd_config
 #Add line "Subsystem       powershell   /usr/bin/pwsh --sshs -NoLogo -NoProfile"
 #Remove commenting on "#PasswordAuthentication yes"
+
+
+
+
+#What Sessions are available
+Invoke-Command -ComputerName pswindows -ScriptBlock {Get-PSSessionConfiguration | Select Name}
+
 
 $Linux = 'uscku1metu03c0l'
 $LinuxAdmin = 'atomadmin'
