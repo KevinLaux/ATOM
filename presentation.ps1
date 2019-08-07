@@ -1,28 +1,97 @@
+<#Old Install Method
+    #Silent Install PowerShell Core
+    Start-Process msiexec.exe -Wait -ArgumentList '/I C:\temp\PowerShell-6.2.0-rc.1-win-x64.msi /q'
+    #Add Env Path for PSCore   
+    $env:Path="$env:Path;C:\Program Files\PowerShell\6-preview\"
+    Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $env:Path
+
+    #Run Command from Powershell and pwsh
+    $PScount = (Get-Command -CommandType Cmdlet | Measure).count
+    $PSCorecount = pwsh -Command "(Get-Command -CommandType Cmdlet | Measure).count"
+
+    Write-Host "Powershell has $PScount commands!" -ForegroundColor Green
+    Write-host "PowerShell Core has $PSCorecount commands!" -ForegroundColor Green
+    Write-Host "Powershell has $($PScount - $PSCorecount) more commands!" -ForegroundColor Green
+
+    #Install OpenSSH
+    & 'C:\Program Files\OpenSSH-Win64\install-sshd.ps1'
+
+    #Add Env Path for OpenSSH
+    $env:Path="$env:Path;C:\Program Files\OpenSSH-Win64"
+    Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $env:Path
+
+    #Open Firewall for OpenSSH
+    New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+    #Set OpenSSH to Auto Start
+
+    Set-Service -Name sshd -StartupType Automatic
+    #Starts OpenSSH to generate default config
+    Start-Service -Name sshd
+    #Stops OpenSSH so we can edit config
+    Stop-Service -Name sshd
+#>
+
 #Windows ModulePSReleaseTools module (https://github.com/jdhitsolutions/PSReleaseTools)
 #On Linux install package yum/apt-get
 #On MAC Brew
 #Oneliners:
-#Windows- iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI -Preview"
-#Linux- wget https://aka.ms/install-powershell.sh; sudo bash install-powershell.sh -preview; rm install-powershell.sh
+    #Windows- iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI -Preview"
+    #Linux- wget https://aka.ms/install-powershell.sh; sudo bash install-powershell.sh -preview; rm install-powershell.sh
 #Download MSI/RPM/PKG
+    
+#Install Powershell on Windows
+iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI"
+iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI -Preview"
+
+#Install SSH on Windows
+
+#Check OpenSSH
+
+Get-WindowsCapability -Online | Where Name -like 'OpenSSH*'  
+
+# Install the OpenSSH Client and Server
+
+Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
+ 
+Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+ 
+# Initial Configuration of SSH Server
+ 
+Start-Service sshd
+ 
+Set-Service -Name sshd -StartupType 'Automatic'
+ 
+# Confirm the Firewall rule is configured. It should be created automatically by setup.
+ 
+Get-NetFirewallRule -Name *ssh*
+ 
+# There should be a firewall rule named "OpenSSH-Server-In-TCP", which should be enabled
+
+& cmd /c mklink /d 'c:\pwsh' 'C:\Program Files\PowerShell\6'
+
+#Removes commenting from user auth line in config
+(Get-Content -Path $env:ProgramData\ssh\sshd_config -Raw) -replace '#PasswordAuthentication yes', 'PasswordAuthentication yes'| Set-Content $env:ProgramData\ssh\sshd_config
+#Add PSCore to Subsystem in config
+(Get-Content $env:ProgramData\ssh\sshd_config) -replace "# override default of no subsystems", "$&`nSubsystem`tpowershell`tC:/Program Files/PowerShell/6-preview/pwsh.exe -sshs -NoLogo -NoProfile" | Set-Content $env:ProgramData\ssh\sshd_config
+
+
+#Install SSH on Linux if not already
 #Update /etc/ssh/sshd_config
 #Add line "Subsystem       powershell   /usr/bin/pwsh --sshs -NoLogo -NoProfile"
 #Remove commenting on "#PasswordAuthentication yes"
-
-
-
+scp C:\Users\klaux\.ssh\id_rsa.pub klaux@laux.net:C:\Users\klaux\.ssh\authorized_keys
 
 #What Sessions are available
 Invoke-Command -ComputerName pswindows -ScriptBlock {Get-PSSessionConfiguration | Select Name}
+Invoke-Command -Session  -ScriptBlock {Get-PSSessionConfiguration | Select Name} -username klaux@laux.net
 
-
-$Linux = 'uscku1metu03c0l'
-$LinuxAdmin = 'atomadmin'
-$Windows = 'uscku1metu03c3'
+$Linux = '192.168.20.32'
+$Mac = '192.168.20.33'
+$Windows = '192.168.20.31'
 
 #test
 #Connect to Linux (Delay in openssh response)
-Enter-PSSession -hostname $Linux -UserName $LinuxAdmin
+Enter-PSSession -hostname $Linux
 #
 $PSversiontable
 #
@@ -61,7 +130,7 @@ Exit-PSSession
 $sessions = @()
 $sessions += New-PSSession -hostname $Linux -UserName atomadmin
 $sessions += New-PSSession $Windows
-$sessions += New-PSSession -hostname $Windows
+$sessions += New-PSSession -hostname $Windows yes
 
 #Lets see what our sessions look like
 $sessions
