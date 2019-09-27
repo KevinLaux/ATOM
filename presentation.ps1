@@ -78,9 +78,9 @@ Get-WindowsCapability -Online | Where Name -like 'OpenSSH*'
 # Install the OpenSSH Client and Server needs local admin access
 
 Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
- 
+
 Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
- 
+
 # Initial Configuration of SSH Server
 
 Enter-PSSession pswindows
